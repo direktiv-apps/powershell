@@ -1,0 +1,31 @@
+url: ""
+functions:
+- type: knative-workflow
+  id: powershell
+  image: gcr.io/direktiv/functions/powershell:test
+  size: large
+states:
+- id: state0
+  type: action
+  action:
+    function: powershell
+    input:
+      commands:
+      - command: pwsh script.ps1
+      files:
+      - data: "Get-ChildItem . | Select Name | ConvertTo-Json \n"
+        name: script.ps1
+    files:
+    - key: script.ps1
+      scope: workflow
+  transition: state1
+- id: state1
+  type: action
+  action:
+    function: powershell
+    input:
+      commands:
+      - command: pwsh script.ps1
+    files:
+    - key: script.ps1
+      scope: workflow
